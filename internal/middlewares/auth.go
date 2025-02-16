@@ -15,7 +15,7 @@ func AuthMiddleware() gin.HandlerFunc {
 			c.Abort()
 			return
 		}
-		// Token validation logic can go here
+		// TODO: Add validation logic
 		c.Next()
 	}
 }

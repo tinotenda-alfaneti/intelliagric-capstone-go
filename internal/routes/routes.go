@@ -15,10 +15,10 @@ func RegisterRoutes(router *gin.Engine, db *config.Database) {
 	userService := services.InitUserService(userRepo)
 	userHandler := handlers.InitUserHandler(userService)
 
-	// Define routes
 	api := router.Group("/api")
 	{
 		api.GET("/users", userHandler.GetUsers)
 		api.POST("/users", userHandler.CreateUser)
+		api.GET("/users/:id", userHandler.GetUserByID)
 	}
 }

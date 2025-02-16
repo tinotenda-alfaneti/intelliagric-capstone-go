@@ -37,3 +37,13 @@ func (handler *UserHandler) CreateUser(ctx *gin.Context) {
 	}
 	ctx.JSON(http.StatusCreated, user)
 }
+
+func (handler *UserHandler) GetUserByID(ctx *gin.Context) {
+	id := ctx.Param("id")
+	user, err := handler.Service.GetUserByID(id)
+	if err != nil {
+		ctx.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
+		return
+	}
+	ctx.JSON(http.StatusOK, user)
+}

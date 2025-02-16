@@ -21,3 +21,7 @@ func (service *UserService) CreateUser(user *models.User) error {
 	// TODO: Add validation logic here
 	return service.Repo.CreateUser(user)
 }
+
+func (service *UserService) GetUserByID(id string) (models.User, error) {
+	return service.Repo.GetUserByID(id)
+}
