@@ -30,3 +30,9 @@ func (repo *UserRepository) GetUserByID(id string) (models.User, error) {
 	err := repo.DB.First(&user, id).Error
 	return user, err
 }
+
+func (repo *UserRepository) GetUserByEmail(email string) (*models.User, error) {
+    var user models.User
+    err := repo.DB.Where("email = ?", email).First(&user).Error
+    return &user, err
+}

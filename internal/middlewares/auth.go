@@ -1,21 +1,30 @@
-package middlewares
+package middleware
 
 import (
-	"net/http"
+    "intelliagric-backend/internal/auth"
+    "net/http"
+    "strings"
 
-	"github.com/gin-gonic/gin"
+    "github.com/gin-gonic/gin"
 )
 
-// AuthMiddleware checks for a valid authentication token
 func AuthMiddleware() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		token := c.GetHeader("Authorization")
-		if token == "" {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
-			c.Abort()
-			return
-		}
-		// TODO: Add validation logic
-		c.Next()
-	}
+    return func(ctx *gin.Context) {
+        tokenString := ctx.GetHeader("Authorization")
+        if tokenString == "" || !strings.HasPrefix(tokenString, "Bearer ") {
+            ctx.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
+            ctx.Abort()
+            return
+        }
+
+        tokenString = strings.TrimPrefix(tokenString, "Bearer ")
+        _, err := auth.ValidateJWT(tokenString)
+        if err != nil {
+            ctx.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
+            ctx.Abort()
+            return
+        }
+
+        ctx.Next()
+    }
 }

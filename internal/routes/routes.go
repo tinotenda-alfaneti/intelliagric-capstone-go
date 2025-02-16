@@ -5,6 +5,7 @@ import (
 	"intelliagric-backend/internal/handlers"
 	"intelliagric-backend/internal/repositories"
 	"intelliagric-backend/internal/services"
+	"intelliagric-backend/internal/middlewares"
 
 	"github.com/gin-gonic/gin"
 )
@@ -17,8 +18,17 @@ func RegisterRoutes(router *gin.Engine, db *config.Database) {
 
 	api := router.Group("/api")
 	{
-		api.GET("/users", userHandler.GetUsers)
-		api.POST("/users", userHandler.CreateUser)
-		api.GET("/users/:id", userHandler.GetUserByID)
+		api.POST("/signup", userHandler.SignUp)
+        api.POST("/login", userHandler.Login)
+        api.POST("/logout", userHandler.Logout)
+
+        protected := api.Group("/")
+        protected.Use(middleware.AuthMiddleware())
+        protected.GET("/protected", func(ctx *gin.Context) {
+            ctx.JSON(200, gin.H{"message": "You are authorized"})
+        })
+		protected.GET("/users", userHandler.GetUsers)
+		protected.POST("/users", userHandler.CreateUser)
+		protected.GET("/users/:id", userHandler.GetUserByID)
 	}
 }
