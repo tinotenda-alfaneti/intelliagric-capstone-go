@@ -5,30 +5,29 @@ import (
 	"intelliagric-backend/internal/handlers"
 	"intelliagric-backend/internal/repositories"
 	"intelliagric-backend/internal/services"
-	"intelliagric-backend/internal/middlewares"
 
 	"github.com/gin-gonic/gin"
 )
 
+// RegisterRoutes initializes all routes
 func RegisterRoutes(router *gin.Engine, db *config.Database) {
-
+	// Initialize repositories
 	userRepo := repositories.InitUserRepository(db.DB)
+	newsRepo := repositories.InitNewsRepository()
+
+	// Initialize services
 	userService := services.InitUserService(userRepo)
+	newsService := services.InitNewsService(newsRepo)
+
+
+	// Initialize handlers
 	userHandler := handlers.InitUserHandler(userService)
+	newsHandler := handlers.InitNewsHandler(newsService)
 
+
+	// API Group
 	api := router.Group("/api")
-	{
-		api.POST("/signup", userHandler.SignUp)
-        api.POST("/login", userHandler.Login)
-        api.POST("/logout", userHandler.Logout)
 
-        protected := api.Group("/")
-        protected.Use(middleware.AuthMiddleware())
-        protected.GET("/protected", func(ctx *gin.Context) {
-            ctx.JSON(200, gin.H{"message": "You are authorized"})
-        })
-		protected.GET("/users", userHandler.GetUsers)
-		protected.POST("/users", userHandler.CreateUser)
-		protected.GET("/users/:id", userHandler.GetUserByID)
-	}
+	RegisterUserRoutes(api, userHandler)
+	RegisterNewsRoutes(api, newsHandler)
 }
