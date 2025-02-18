@@ -18,11 +18,13 @@ func RegisterRoutes(router *gin.Engine, db *config.Database) {
 	// Initialize services
 	userService := services.InitUserService(userRepo)
 	newsService := services.InitNewsService(newsRepo)
+	authService := services.InitAuthService(userRepo)
 
 
 	// Initialize handlers
 	userHandler := handlers.InitUserHandler(userService)
 	newsHandler := handlers.InitNewsHandler(newsService)
+	authHandler := handlers.InitAuthHandler(authService)
 
 
 	// API Group
@@ -30,4 +32,5 @@ func RegisterRoutes(router *gin.Engine, db *config.Database) {
 
 	RegisterUserRoutes(api, userHandler)
 	RegisterNewsRoutes(api, newsHandler)
+	RegisterAuthRoutes(api, authHandler)
 }

@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"intelliagric-backend/internal/services"
+	"intelliagric-backend/internal/utils"
 
 	"github.com/gin-gonic/gin"
 )
@@ -22,7 +23,7 @@ func (handler *NewsHandler) GetAgricultureNews(ctx *gin.Context) {
 	news, err := handler.Service.GetAgricultureNews()
 	if err != nil {
 		fmt.Println(err)
-		ctx.JSON(http.StatusInternalServerError, ErrorResponse{Error: "Failed to fetch news"})
+		ctx.JSON(http.StatusInternalServerError, utils.ErrorResponse{Error: "Failed to fetch news"})
 		return
 	}
 

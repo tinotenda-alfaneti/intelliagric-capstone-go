@@ -5,10 +5,11 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"intelliagric-backend/internal/models"
+
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
-	"intelliagric-backend/internal/repositories"
 )
 
 // MockNewsService mocks the NewsService
@@ -16,9 +17,9 @@ type MockNewsService struct {
 	mock.Mock
 }
 
-func (m *MockNewsService) GetAgricultureNews() (*repositories.NewsResponse, error) {
+func (m *MockNewsService) GetAgricultureNews() (models.NewsResponse, error) {
 	args := m.Called()
-	return args.Get(0).(*repositories.NewsResponse), args.Error(1)
+	return args.Get(0).(models.NewsResponse), args.Error(1)
 }
 
 func TestGetAgricultureNewsHandler(t *testing.T) {
@@ -27,8 +28,8 @@ func TestGetAgricultureNewsHandler(t *testing.T) {
 	handler := InitNewsHandler(mockService)
 
 	// Fake news response
-	mockNews := &repositories.NewsResponse{
-		Articles: []repositories.NewsArticle{
+	mockNews := models.NewsResponse{
+		Articles: []models.NewsArticle{
 			{Title: "Fake News", Description: "Testing handler"},
 		},
 	}

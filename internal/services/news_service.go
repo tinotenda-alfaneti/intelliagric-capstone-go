@@ -1,12 +1,13 @@
 package services
 
 import (
+	"intelliagric-backend/internal/models"
 	"intelliagric-backend/internal/repositories"
 )
 
 // NewsService defines the interface for news-related operations
 type NewsService interface {
-	GetAgricultureNews() (*repositories.NewsResponse, error)
+	GetAgricultureNews() (models.NewsResponse, error)
 }
 
 // newsService implements NewsService
@@ -19,6 +20,6 @@ func InitNewsService(repo repositories.NewsRepository) NewsService {
 }
 
 // GetAgricultureNews calls the repository to fetch news
-func (service *newsService) GetAgricultureNews() (*repositories.NewsResponse, error) {
+func (service *newsService) GetAgricultureNews() (models.NewsResponse, error) {
 	return service.Repo.FetchAgricultureNews()
 }

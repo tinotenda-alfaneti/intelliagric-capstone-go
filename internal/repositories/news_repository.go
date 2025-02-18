@@ -3,29 +3,15 @@ package repositories
 import (
 	"encoding/json"
 	"fmt"
+	"intelliagric-backend/internal/models"
 	"os"
 
 	"github.com/go-resty/resty/v2"
 )
 
-// NewsArticle represents a single news article structure
-type NewsArticle struct {
-	Title       string `json:"title"`
-	Description string `json:"description"`
-	Content     string `json:"content"`
-	URL         string `json:"url"`
-	Image       string `json:"image"`
-	PublishedAt string `json:"publishedAt"`
-}
-
-// NewsResponse represents the response from the API
-type NewsResponse struct {
-	Articles []NewsArticle `json:"articles"`
-}
-
 // NewsRepository defines the interface for fetching news
 type NewsRepository interface {
-	FetchAgricultureNews() (*NewsResponse, error)
+	FetchAgricultureNews() (models.NewsResponse, error)
 }
 
 // newsRepository implements NewsRepository
@@ -37,7 +23,7 @@ func InitNewsRepository() NewsRepository {
 }
 
 // FetchAgricultureNews fetches news from GNews API
-func (repo *newsRepository) FetchAgricultureNews() (*NewsResponse, error) {
+func (repo *newsRepository) FetchAgricultureNews() (models.NewsResponse, error) {
 	apiKey := os.Getenv("GNEWS_API_KEY")
 	baseURL := "https://gnews.io/api/v4/search"
 	query := "agriculture+africa"
@@ -50,14 +36,14 @@ func (repo *newsRepository) FetchAgricultureNews() (*NewsResponse, error) {
 	resp, err := client.R().Get(url)
 	if err != nil {
 		fmt.Println("Error fetching news:", err)
-		return nil, err
+		return models.NewsResponse{}, err
 	}
 
-	var newsData NewsResponse
+	var newsData models.NewsResponse
 	if err := json.Unmarshal(resp.Body(), &newsData); err != nil {
 		fmt.Println("Error unmarshalling response:", err)
-		return nil, err
+		return models.NewsResponse{}, err
 	}
 
-	return &newsData, nil
+	return newsData, nil
 }

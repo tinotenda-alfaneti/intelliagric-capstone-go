@@ -3,9 +3,10 @@ package services
 import (
 	"testing"
 
+	"intelliagric-backend/internal/models"
+
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
-	"intelliagric-backend/internal/repositories"
 )
 
 // MockRepository mocks the NewsRepository
@@ -13,9 +14,9 @@ type MockRepository struct {
 	mock.Mock
 }
 
-func (m *MockRepository) FetchAgricultureNews() (*repositories.NewsResponse, error) {
+func (m *MockRepository) FetchAgricultureNews() (models.NewsResponse, error) {
 	args := m.Called()
-	return args.Get(0).(*repositories.NewsResponse), args.Error(1)
+	return args.Get(0).(models.NewsResponse), args.Error(1)
 }
 
 func TestGetAgricultureNews(t *testing.T) {
@@ -23,8 +24,8 @@ func TestGetAgricultureNews(t *testing.T) {
 	mockService := InitNewsService(mockRepo)
 
 	// Fake response
-	mockNews := &repositories.NewsResponse{
-		Articles: []repositories.NewsArticle{
+	mockNews := models.NewsResponse{
+		Articles: []models.NewsArticle{
 			{Title: "Fake News", Description: "This is a fake news article"},
 		},
 	}
