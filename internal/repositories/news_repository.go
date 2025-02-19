@@ -10,7 +10,6 @@ import (
 	"time"
 	
 	"intelliagric-backend/internal/models"
-	"intelliagric-backend/internal/utils"
 
 	"github.com/sony/gobreaker"
 )
@@ -24,14 +23,11 @@ type NewsRepository interface {
 // newsRepository implements NewsRepository.
 type newsRepository struct {
 	apiURL         string
-	rateLimiter    *utils.RateLimiter
 	circuitBreaker *gobreaker.CircuitBreaker
 }
 
 // InitNewsRepository initializes a new newsRepository instance with rate limiting and a circuit breaker.
 func InitNewsRepository() NewsRepository {
-	
-	rateLimiter := utils.InitRateLimiter(5, 10)
 
 	// Set up circuit breaker settings.
 	cbSettings := gobreaker.Settings{
@@ -56,7 +52,6 @@ func InitNewsRepository() NewsRepository {
 
 	return &newsRepository{
 		apiURL:         apiUrl,
-		rateLimiter:    rateLimiter,
 		circuitBreaker: cicuitBreaker,
 	}
 }
@@ -64,8 +59,6 @@ func InitNewsRepository() NewsRepository {
 
 // FetchAgricultureNews fetches news from GNews API
 func (repo *newsRepository) FetchAgricultureNews() (models.NewsResponse, error) {
-
-	repo.rateLimiter.Wait()
 
 	// Wrap the HTTP call with the circuit breaker.
 	result, err := repo.circuitBreaker.Execute(func() (interface{}, error) {
