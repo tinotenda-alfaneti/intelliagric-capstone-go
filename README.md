@@ -23,3 +23,4 @@ This repo is for converting the [project](https://github.com/tinotenda-alfaneti/
 7. GORM
 8. Api documentation in Go
 9. JWT
+10. OpenTelemetry - open-source observability framework
