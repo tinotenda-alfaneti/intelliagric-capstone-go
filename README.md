@@ -15,12 +15,13 @@ This repo is for converting the [project](https://github.com/tinotenda-alfaneti/
 ## Technologies/Concepts
 
 1. Docker
-2. Golang
+2. Golang - Goroutines and Channels
 3. Gin framework
 4. Repository design pattern
 5. IoC using Dependency Injection
 6. Testing
 7. GORM
 8. Api documentation in Go
-9. JWT
+9. JWT and Cookies
 10. OpenTelemetry - open-source observability framework
+11. Rate limiting and circuit breaking using token bucket algorithm
