@@ -25,3 +25,4 @@ This repo is for converting the [project](https://github.com/tinotenda-alfaneti/
 9. JWT and Cookies
 10. OpenTelemetry - open-source observability framework
 11. Rate limiting and circuit breaking using token bucket algorithm
+12. GraphQL using gqlgen
