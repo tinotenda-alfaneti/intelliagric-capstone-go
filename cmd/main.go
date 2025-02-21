@@ -6,13 +6,15 @@ import (
 	_ "intelliagric-backend/docs"
 	"intelliagric-backend/internal/routes"
 	"log"
+	"net/http"
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
+	"go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/exporters/stdout/stdouttrace"
 	"go.opentelemetry.io/otel/propagation"
-	"go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin"
 	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 
 	swaggerFiles "github.com/swaggo/files"
@@ -74,16 +76,28 @@ func main() {
 	db.Connect()
 
 	router := gin.Default()
+	api := router.Group("/api")
 
-		// Add OpenTelemetry middleware for Gin.
+	api.GET("/health", func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{"status": "alive"})
+	})
+
+	api.GET("/ready", func(c *gin.Context) {
+		// TODO: verify connectivity to dependencies.
+		c.JSON(http.StatusOK, gin.H{"status": "ready"})
+	})
+
+	api.GET("/metrics", gin.WrapH(promhttp.Handler()))
+
+	// Add OpenTelemetry middleware for Gin.
 	// This will automatically trace incoming HTTP requests.
-	router.Use(otelgin.Middleware("intelliagric-backend"))
+	api.Use(otelgin.Middleware("intelliagric-backend"))
 
 	// Register routes
-	routes.RegisterRoutes(router, db)
+	routes.RegisterRoutes(api, db)
 
 	// Add Swagger route
-	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	api.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	// Start the server
 	port := config.GetPort()

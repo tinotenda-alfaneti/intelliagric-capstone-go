@@ -26,3 +26,4 @@ This repo is for converting the [project](https://github.com/tinotenda-alfaneti/
 10. OpenTelemetry - open-source observability framework
 11. Rate limiting and circuit breaking using token bucket algorithm
 12. GraphQL using gqlgen
+23. Promethius
