@@ -12,7 +12,7 @@ import (
 )
 
 // RegisterRoutes initializes all routes
-func RegisterRoutes(router *gin.Engine, db *config.Database) {
+func RegisterRoutes(api *gin.RouterGroup, db *config.Database) {
 
 	// Initialize repositories
 	userRepo := repositories.InitUserRepository(db.DB)
@@ -30,9 +30,7 @@ func RegisterRoutes(router *gin.Engine, db *config.Database) {
 	authHandler := handlers.InitAuthHandler(authService)
 
 	rateLimiter := utils.InitRateLimiter(5, 10)
-	
-	// API Group
-	api := router.Group("/api")
+
 	api.Use(middleware.RateLimitMiddleware(rateLimiter))
 
 	RegisterUserRoutes(api, userHandler)
